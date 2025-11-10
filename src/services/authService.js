@@ -1,6 +1,6 @@
 import api from "./api";
 
-async function login(username, password) {
+export async function login(username, password) {
   try {
     const response = await api.post("/api/auth/signin", {
       user: {
@@ -22,16 +22,21 @@ async function login(username, password) {
   }
 }
 
-async function register(username, password, password_confirmation) {
+export async function register(
+  username,
+  email,
+  password,
+  password_confirmation
+) {
   try {
     const response = await api.post("/api/auth/signup", {
       user: {
         username: username,
+        email: email,
         password: password,
         password_confirmation: password,
       },
     });
-
     //Rails return: {token: jwt_here, user: ...}
     const { token, user } = response.data;
 
@@ -45,7 +50,7 @@ async function register(username, password, password_confirmation) {
   }
 }
 
-async function logout() {
+export async function logout() {
   try {
     const response = await api.post("/api/auth/logout", {});
 

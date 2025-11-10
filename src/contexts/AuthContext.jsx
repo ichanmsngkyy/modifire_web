@@ -1,4 +1,4 @@
-import { createContext, useState, useEffect } from "react";
+import { createContext, useState, useEffect, useContext } from "react";
 import { login, register, logout } from "../services/authService";
 
 export const AuthContext = createContext();
@@ -20,10 +20,16 @@ export const AuthProvider = ({ children }) => {
     }
   }
 
-  async function handleRegister(username, password, password_confirmation) {
+  async function handleRegister(
+    username,
+    email,
+    password,
+    password_confirmation
+  ) {
     try {
       const userData = await register(
         username,
+        email,
         password,
         password_confirmation
       );
@@ -59,4 +65,10 @@ export const AuthProvider = ({ children }) => {
       {children}
     </AuthContext.Provider>
   );
+};
+
+export default AuthProvider;
+
+export const useAuth = () => {
+  return useContext(AuthContext);
 };
