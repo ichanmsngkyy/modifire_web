@@ -1,5 +1,6 @@
 import { useState, useContext } from "react";
 import { AuthContext } from "../contexts/AuthContext";
+import styles from "./Register.module.css";
 
 function RegisterForm() {
   const { handleRegister } = useContext(AuthContext);
@@ -67,53 +68,64 @@ function RegisterForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <div>
-        <label htmlFor="username">
-          Username:
+    <div className={styles.background}>
+      <form className={styles.formContainer} onSubmit={handleSubmit}>
+        <div className={styles.formGroup}>
+          <label className={styles.formLabel} htmlFor="username">
+            Username:
+          </label>
           <input
+            className={`${`${styles.inputField} ${
+              errors.username ? styles.inputError : ""
+            }`} ${errors.username ? styles.inputError : ""}`}
             type="text"
             id="username"
             name="username"
             value={formData.username}
             onChange={handleChange}
           />
-        </label>
-        {errors.username && <p className="error">{errors.username}</p>}
-      </div>
-
-      <div>
-        <label htmlFor="email">
-          Email:
+          {errors.username && <p className={styles.error}>{errors.username}</p>}
+        </div>
+        <div className={styles.formGroup}>
+          <label className={styles.formLabel} htmlFor="email">
+            Email:
+          </label>
           <input
+            className={`${styles.inputField} ${
+              errors.username ? styles.inputError : ""
+            }`}
             type="email"
             id="email"
             name="email"
             value={formData.email}
             onChange={handleChange}
           />
-        </label>
-        {errors.email && <p className="error">{errors.email}</p>}
-      </div>
-
-      <div>
-        <label htmlFor="password">
-          Password:
+          {errors.email && <p className={styles.error}>{errors.email}</p>}
+        </div>
+        <div className={styles.formGroup}>
+          <label className={styles.formLabel} htmlFor="password">
+            Password:
+          </label>
           <input
+            className={`${styles.inputField} ${
+              errors.username ? styles.inputError : ""
+            }`}
             type="password"
             id="password"
             name="password"
             value={formData.password}
             onChange={handleChange}
           />
-        </label>
-        {errors.password && <p className="error">{errors.password}</p>}
-      </div>
-
-      <div>
-        <label htmlFor="password_confirmation">
-          Confirm Password:
+          {errors.password && <p className={styles.error}>{errors.password}</p>}
+        </div>
+        <div className={styles.formGroup}>
+          <label className={styles.formLabel} htmlFor="password_confirmation">
+            Confirm Password:
+          </label>
           <input
+            className={`${styles.inputField} ${
+              errors.password_confirmation ? styles.inputError : ""
+            }`}
             type="password"
             id="password_confirmation"
             name="password_confirmation"
@@ -121,13 +133,22 @@ function RegisterForm() {
             onChange={handleChange}
           />
           {errors.password_confirmation && (
-            <p className="error">{errors.password_confirmation}</p>
+            <p className={styles.error}>{errors.password_confirmation}</p>
           )}
-        </label>
-      </div>
-
-      <button type="submit">Sign up!</button>
-    </form>
+        </div>
+        <div className={styles.formGroup}>
+          <button className={styles.submitButton} type="submit">
+            Sign up!
+          </button>
+        </div>
+        <div className={styles.signinPrompt}>
+          Already have an account?{" "}
+          <a href="/login" className={styles.signinLink}>
+            Sign in
+          </a>
+        </div>
+      </form>
+    </div>
   );
 }
 
