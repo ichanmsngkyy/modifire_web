@@ -2,7 +2,7 @@ import api from "./api";
 
 export async function login(username, password) {
   try {
-    const response = await api.post("/api/auth/signin", {
+    const response = await api.post("/api/auth/login", {
       user: {
         username: username,
         password: password,
@@ -34,7 +34,7 @@ export async function register(
         username: username,
         email: email,
         password: password,
-        password_confirmation: password,
+        password_confirmation: password_confirmation,
       },
     });
     //Rails return: {token: jwt_here, user: ...}
@@ -51,9 +51,18 @@ export async function register(
 }
 
 export async function logout() {
+  const token = localStorage.getItem("token");
+  if (!token || token === "null" || token === "undefined") {
+    // No token, nothing to do
+    localStorage.removeItem("token");
+    return;
+  }
   try {
-    const response = await api.post("/api/auth/logout", {});
-
+    await api.delete("/api/auth/logout", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
     localStorage.removeItem("token");
   } catch (error) {
     console.error("Log out failed: ", error);

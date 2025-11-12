@@ -1,22 +1,22 @@
-import { useState, useContext } from "react";
+import { useContext, useState } from "react";
 import { AuthContext } from "../contexts/AuthContext";
 import styles from "./AuthForm.module.css";
 import { useNavigate } from "react-router-dom";
 
-function RegisterForm() {
-  const { handleRegister } = useContext(AuthContext);
+function LoginForm() {
+  const { handleLogin } = useContext(AuthContext);
   const [formData, setFormData] = useState({
     username: "",
-    email: "",
     password: "",
-    password_confirmation: "",
   });
 
   const [errors, setErrors] = useState({});
+  const [generalError, setGeneralError] = useState("");
   const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+    setGeneralError("");
     setFormData((prevData) => ({
       ...prevData,
       [name]: value,
@@ -27,22 +27,10 @@ function RegisterForm() {
     e.preventDefault();
     if (validateForm()) {
       try {
-        await handleRegister(
-          formData.username,
-          formData.email,
-          formData.password,
-          formData.password_confirmation
-        );
-        console.log(
-          formData.username,
-          formData.email,
-          formData.password,
-          formData.password_confirmation
-        );
+        await handleLogin(formData.username, formData.password);
         navigate("/dashboard");
-        console.log("Form submitted successfully:", formData);
       } catch (error) {
-        setErrors({ api: error.response.data.status.message });
+        setGeneralError("Invalid username or password");
         throw error;
       }
     }
@@ -53,18 +41,10 @@ function RegisterForm() {
     if (!formData.username.trim()) {
       newErrors.username = "Username is required";
     }
-    if (!formData.email.trim()) {
-      newErrors.email = "Email is required";
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = "Email is invalid";
-    }
     if (!formData.password) {
       newErrors.password = "Password is required";
     } else if (formData.password.length < 6) {
       newErrors.password = "Password must be at least 6 characters";
-    }
-    if (formData.password != formData.password_confirmation) {
-      newErrors.password_confirmation = "Passwords do not match";
     }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -90,22 +70,6 @@ function RegisterForm() {
           {errors.username && <p className={styles.error}>{errors.username}</p>}
         </div>
         <div className={styles.formGroup}>
-          <label className={styles.formLabel} htmlFor="email">
-            Email:
-          </label>
-          <input
-            className={`${styles.inputField} ${
-              errors.email ? styles.inputError : ""
-            }`}
-            type="email"
-            id="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-          />
-          {errors.email && <p className={styles.error}>{errors.email}</p>}
-        </div>
-        <div className={styles.formGroup}>
           <label className={styles.formLabel} htmlFor="password">
             Password:
           </label>
@@ -121,34 +85,18 @@ function RegisterForm() {
           />
           {errors.password && <p className={styles.error}>{errors.password}</p>}
         </div>
-        <div className={styles.formGroup}>
-          <label className={styles.formLabel} htmlFor="password_confirmation">
-            Confirm Password:
-          </label>
-          <input
-            className={`${styles.inputField} ${
-              errors.password_confirmation ? styles.inputError : ""
-            }`}
-            type="password"
-            id="password_confirmation"
-            name="password_confirmation"
-            value={formData.password_confirmation}
-            onChange={handleChange}
-          />
-          {errors.password_confirmation && (
-            <p className={styles.error}>{errors.password_confirmation}</p>
-          )}
-        </div>
-        {errors.api && <p className={styles.error}>{errors.api}</p>}
+
         <div className={styles.formGroup}>
           <button className={styles.submitButton} type="submit">
-            Sign up!
+            Log in!
           </button>
         </div>
+        {generalError && <div className={styles.error}>{generalError}</div>}
+
         <div className={styles.signinPrompt}>
-          Already have an account?{" "}
-          <a href="/login" className={styles.signinLink}>
-            Sign in
+          Don't have an account?{" "}
+          <a href="/register" className={styles.signUpLink}>
+            Sign Up
           </a>
         </div>
       </form>
@@ -156,4 +104,4 @@ function RegisterForm() {
   );
 }
 
-export default RegisterForm;
+export default LoginForm;

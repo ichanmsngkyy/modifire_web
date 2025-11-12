@@ -61,8 +61,13 @@
 
 .inputField:focus {
   outline: none;
-  border: 1.5px solid var(--accent);
-  box-shadow: 0 0 8px 2px var(--accent), 0 1px 4px rgba(0, 0, 0, 0.04);
+  border: 1.5px solid var(--green);
+  box-shadow: 0 0 8px 2px var(--green), 0 1px 4px rgba(0, 0, 0, 0.04);
+}
+
+.inputField:focus:invalid {
+  border: 1.5px solid #ff6b6b;
+  box-shadow: 0 0 8px 2px #ff6b6b, 0 1px 4px rgba(0, 0, 0, 0.04);
 }
 .inputField::placeholder {
   color: #888;
@@ -91,12 +96,13 @@
 
 .signinPrompt {
   color: var(--primary);
+  font-size: 0.8rem;
 }
 
 .error {
   color: #ff6b6b; /* red */
   font-size: 0.8rem;
-  margin-top: 0.5rem;
+  margin: 10px 0;
   display: block;
 }
 
