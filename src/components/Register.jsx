@@ -1,6 +1,5 @@
 import { useState, useContext } from "react";
 import { AuthContext } from "../contexts/AuthContext";
-import styles from "./Register.module.css";
 
 function RegisterForm() {
   const { handleRegister } = useContext(AuthContext);
@@ -12,6 +11,7 @@ function RegisterForm() {
   });
 
   const [errors, setErrors] = useState({});
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -37,9 +37,10 @@ function RegisterForm() {
           formData.password,
           formData.password_confirmation
         );
+        navigate("/dashboard");
         console.log("Form submitted successfully:", formData);
       } catch (error) {
-        console.log("Form has errors");
+        setErrors({ api: error.response.data.status.message });
         throw error;
       }
     }
@@ -75,9 +76,6 @@ function RegisterForm() {
             Username:
           </label>
           <input
-            className={`${`${styles.inputField} ${
-              errors.username ? styles.inputError : ""
-            }`} ${errors.username ? styles.inputError : ""}`}
             type="text"
             id="username"
             name="username"
@@ -91,9 +89,6 @@ function RegisterForm() {
             Email:
           </label>
           <input
-            className={`${styles.inputField} ${
-              errors.username ? styles.inputError : ""
-            }`}
             type="email"
             id="email"
             name="email"
@@ -107,9 +102,6 @@ function RegisterForm() {
             Password:
           </label>
           <input
-            className={`${styles.inputField} ${
-              errors.username ? styles.inputError : ""
-            }`}
             type="password"
             id="password"
             name="password"
@@ -135,20 +127,11 @@ function RegisterForm() {
           {errors.password_confirmation && (
             <p className={styles.error}>{errors.password_confirmation}</p>
           )}
-        </div>
-        <div className={styles.formGroup}>
-          <button className={styles.submitButton} type="submit">
-            Sign up!
-          </button>
-        </div>
-        <div className={styles.signinPrompt}>
-          Already have an account?{" "}
-          <a href="/login" className={styles.signinLink}>
-            Sign in
-          </a>
-        </div>
-      </form>
-    </div>
+        </label>
+      </div>
+
+      <button type="submit">Sign up!</button>
+    </form>
   );
 }
 

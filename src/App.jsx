@@ -1,28 +1,34 @@
 import { useState } from "react";
-import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
+import { HashRouter as Router, Routes, Route, Link } from "react-router-dom";
 import "./App.css";
-import { AuthContext } from "./contexts/AuthContext";
+import { AuthProvider } from "./contexts/AuthContext";
 import RegisterForm from "./components/Register";
-// import LoginForm from "./components/Login";
+import LoginForm from "./components/Login";
+import Dashboard from "./components/Dashboard";
+import ProtectedRoute from "./components/ProtectedRoutes";
+import HomePage from "./components/HomePage";
 
 function App() {
   const [count, setCount] = useState(0);
 
   return (
-    <Router>
-      <nav>
-        <Link to="/register">Register</Link>
-        {/* <Link to="/login">Login</Link> */}
-        {/* Add more links/tabs here */}
-      </nav>
-      <Routes>
-        <Route path="/register" element={<RegisterForm />} />
-        {/* <Route path="/login" element={<LoginForm />} /> */}
-        {/* Add more routes here */}
-      </Routes>
-    </Router>
+    <AuthProvider>
+      <Router>
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/register" element={<RegisterForm />} />
+          <Route path="/login" element={<LoginForm />} />
+          <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            }
+          />
+        </Routes>
+      </Router>
+    </AuthProvider>
   );
 }
 

@@ -1,0 +1,112 @@
+.background {
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(120deg, var(--darkblue) 0%, #1e1e1e 100%);
+  /* Optionally, add a background image: */
+  /* background-image: url('/path/to/your/background.jpg'); */
+  background-size: cover;
+  background-position: center;
+}
+
+.formContainer {
+  background: #1e1e1e;
+  padding: 2.5rem 2rem;
+  border-radius: 24px;
+  max-width: 400px;
+  width: 100%;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.formGroup {
+  width: 100%;
+  margin-bottom: 1em;
+}
+
+.formTitle {
+  color: #181a1b;
+  text-align: center;
+  margin-bottom: 2rem;
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.formLabel {
+  text-align: left;
+  color: var(--text);
+  font-size: 1rem;
+  font-weight: 500;
+  display: block;
+  margin-bottom: 0.75rem;
+}
+
+.inputField {
+  width: 100%;
+  display: block;
+  padding: 1rem;
+  border-radius: 12px;
+  border: 1.5px solid #e0e0e0;
+  background: var(--primary);
+  color: var(--black);
+  font-size: 1rem;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+  transition: border 0.2s, box-shadow 0.2s;
+}
+
+.inputField:focus {
+  outline: none;
+  border: 1.5px solid var(--green);
+  box-shadow: 0 0 8px 2px var(--green), 0 1px 4px rgba(0, 0, 0, 0.04);
+}
+
+.inputField:focus:invalid {
+  border: 1.5px solid #ff6b6b;
+  box-shadow: 0 0 8px 2px #ff6b6b, 0 1px 4px rgba(0, 0, 0, 0.04);
+}
+.inputField::placeholder {
+  color: #888;
+  opacity: 1;
+}
+
+.submitButton {
+  width: 100%;
+  padding: 1.1rem 0;
+  background: var(--green);
+  color: var(--black);
+  border: none;
+  font: "Cairo";
+  border-radius: 16px;
+  font-weight: 700;
+  font-size: 1.1rem;
+  cursor: pointer;
+  box-shadow: 0 2px 12px var(--darkgreen);
+  transition: background 0.2s, box-shadow 0.2s;
+  letter-spacing: 0.5px;
+}
+.submitButton:hover {
+  background: var(--accent);
+  box-shadow: 0 4px 16px var(--darkgreen);
+}
+
+.signinPrompt {
+  color: var(--primary);
+  font-size: 0.8rem;
+}
+
+.error {
+  color: #ff6b6b; /* red */
+  font-size: 0.8rem;
+  margin: 10px 0;
+  display: block;
+}
+
+.inputError {
+  border: 1.5px solid #ff6b6b;
+  box-shadow: 0 0 8px 2px #ff6b6b, 0 1px 4px rgba(0, 0, 0, 0.04);
+}

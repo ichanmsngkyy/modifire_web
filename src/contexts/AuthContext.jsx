@@ -3,6 +3,10 @@ import { login, register, logout } from "../services/authService";
 
 export const AuthContext = createContext();
 
+export const useAuth = () => {
+  return useContext(AuthContext);
+};
+
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(
@@ -33,8 +37,11 @@ export const AuthProvider = ({ children }) => {
         password,
         password_confirmation
       );
+      // Auto-login: set auth state so the app treats the newly registered
+      // user as authenticated immediately.
       setUser(userData);
       setIsAuthenticated(true);
+      return userData;
     } catch (error) {
       console.error("Sign up Failed", error);
       throw error;
@@ -65,10 +72,4 @@ export const AuthProvider = ({ children }) => {
       {children}
     </AuthContext.Provider>
   );
-};
-
-export default AuthProvider;
-
-export const useAuth = () => {
-  return useContext(AuthContext);
 };
