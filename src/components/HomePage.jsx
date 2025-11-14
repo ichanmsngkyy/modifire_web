@@ -5,12 +5,11 @@ import {
   Typography,
   Button,
   Box,
-  Grid,
-  Chip,
-  autocompleteClasses,
+  Dialog,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import logo from "../assets/ModifireLOGO1.png";
+import LoginForm from "./Login";
 
 // Put shared styles here at the top
 const NavButton = styled(Button)({
@@ -33,6 +32,8 @@ const HomeButton = styled(Button)({
     transform: "scale(1.05)",
   },
 });
+
+const [open, setOpen] = useState(false);
 
 function HomePage() {
   return (
@@ -75,7 +76,12 @@ function HomePage() {
               <NavButton color="inherit">ABOUT US</NavButton>
               <NavButton color="inherit">CONTACT US</NavButton>
               <NavButton color="inherit">MODIFY</NavButton>
-              <NavButton color="inherit">LOG IN / REGISTER</NavButton>
+              <NavButton color="inherit" onClick={() => setOpen(true)}>
+                LOG IN / REGISTER
+              </NavButton>
+              <Dialog open={open} onClose={() => setOpen(false)}>
+                <LoginForm />
+              </Dialog>
             </Box>
           </Box>
         </Toolbar>
@@ -210,7 +216,15 @@ function HomePage() {
       </Box>
 
       {/* Newsletter Section */}
-      <Box sx={{ bgcolor: "var(--darkgray)", py: 6, minHeight: "25vh", display: "flex",justifyContents: "center"}}>
+      <Box
+        sx={{
+          bgcolor: "var(--darkgray)",
+          py: 6,
+          minHeight: "25vh",
+          display: "flex",
+          justifyContents: "center",
+        }}
+      >
         <Box
           sx={{
             maxWidth: 1200,

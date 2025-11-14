@@ -1,6 +1,6 @@
 import { useContext, useState } from "react";
 import { AuthContext } from "../contexts/AuthContext";
-import styles from "./AuthForm.module.css";
+import { Typography, Button, Box } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
 function LoginForm() {
@@ -51,56 +51,17 @@ function LoginForm() {
   };
 
   return (
-    <div className={styles.background}>
-      <form className={styles.formContainer} onSubmit={handleSubmit}>
-        <div className={styles.formGroup}>
-          <label className={styles.formLabel} htmlFor="username">
-            Username:
-          </label>
-          <input
-            className={`${styles.inputField} ${
-              errors.username ? styles.inputError : ""
-            }`}
-            type="text"
-            id="username"
-            name="username"
-            value={formData.username}
-            onChange={handleChange}
-          />
-          {errors.username && <p className={styles.error}>{errors.username}</p>}
-        </div>
-        <div className={styles.formGroup}>
-          <label className={styles.formLabel} htmlFor="password">
-            Password:
-          </label>
-          <input
-            className={`${styles.inputField} ${
-              errors.password ? styles.inputError : ""
-            }`}
-            type="password"
-            id="password"
-            name="password"
-            value={formData.password}
-            onChange={handleChange}
-          />
-          {errors.password && <p className={styles.error}>{errors.password}</p>}
-        </div>
-
-        <div className={styles.formGroup}>
-          <button className={styles.submitButton} type="submit">
-            Log in!
-          </button>
-        </div>
-        {generalError && <div className={styles.error}>{generalError}</div>}
-
-        <div className={styles.signinPrompt}>
-          Don't have an account?{" "}
-          <a href="/register" className={styles.signUpLink}>
-            Sign Up
-          </a>
-        </div>
-      </form>
-    </div>
+    <Box
+      sx={{
+        bgcolor: "var(--darkgray)",
+        maxWidth: "30%",
+        display: "flex",
+        justifyContent: "center",
+        alignContent: "center",
+      }}
+    >
+      <Typography variant="h6">Log in</Typography>
+    </Box>
   );
 }
 
