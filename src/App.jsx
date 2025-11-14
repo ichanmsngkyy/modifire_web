@@ -4,7 +4,6 @@ import "./App.css";
 import { AuthProvider } from "./contexts/AuthContext";
 import RegisterForm from "./components/Register";
 import LoginForm from "./components/Login";
-import HomePage from "./components/HomePage";
 import Dashboard from "./components/Dashboard";
 import ProtectedRoute from "./components/ProtectedRoutes";
 import HomePage from "./components/HomePage";
