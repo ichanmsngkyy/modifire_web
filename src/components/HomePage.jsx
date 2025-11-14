@@ -6,10 +6,12 @@ import {
   Button,
   Box,
   Dialog,
+  Grid,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import logo from "../assets/ModifireLOGO1.png";
 import LoginForm from "./Login";
+import { useState } from "react";
 
 // Put shared styles here at the top
 const NavButton = styled(Button)({
@@ -33,9 +35,8 @@ const HomeButton = styled(Button)({
   },
 });
 
-const [open, setOpen] = useState(false);
-
 function HomePage() {
+  const [open, setOpen] = useState(false);
   return (
     <Box sx={{ bgcolor: "var(--darkgray)", minHeight: "100vh" }}>
       {/* Header */}
@@ -79,7 +80,25 @@ function HomePage() {
               <NavButton color="inherit" onClick={() => setOpen(true)}>
                 LOG IN / REGISTER
               </NavButton>
-              <Dialog open={open} onClose={() => setOpen(false)}>
+              <Dialog
+                open={open}
+                onClose={() => setOpen(false)}
+                BackdropProps={{
+                  sx: {
+                    backdropFilter: "blur(6px)",
+                    backgroundColor: "rgba(0,0,0,0.3)", // optional: darken the blur
+                  },
+                }}
+                PaperProps={{
+                  sx: {
+                    boxShadow: "none",
+                    outline: "none",
+                    border: "none", // optional
+                    backgroundColor: "var(--darkgray)",
+                    borderRadius: 2.5, // match your theme
+                  },
+                }}
+              >
                 <LoginForm />
               </Dialog>
             </Box>
@@ -167,51 +186,47 @@ function HomePage() {
           >
             DISCOVER OUR COMMITMENT TO EXCELLENCE IN FIREARMS CUSTOMIZATION
           </Typography>
-          <Grid container spacing={4}>
-            {/* Left side - Description */}
-            <Grid item xs={12} md={5}>
-              <Typography
-                variant="h6"
-                sx={{
-                  color: "var(--primary)",
-                  fontWeight: 800,
-                  mb: 2,
-                  fontFamily: "Cairo",
-                }}
-              >
-                WHERE PRECISION MEETS VISUALIZATION
-              </Typography>
-              <Typography
-                variant="body2"
-                sx={{
-                  color: "var(--text)",
-                  mb: 3,
-                  fontFamily: "Space Grotesk",
-                  fontWeight: 500,
-                }}
-              >
-                At Modifire, we understand that building your ideal firearm
-                shouldn't involve guesswork. Our platform combines cutting-edge
-                visualization technology with comprehensive compatibility checks
-                and instant pricing to give you complete control over your
-                customization journey. Whether you're a competitive shooter
-                optimizing performance or an enthusiast exploring tactical
-                configurations, Modifire provides the tools, accuracy, and
-                confidence you need to bring your vision to life.
-              </Typography>
-              <Button
-                variant="contained"
-                sx={{
-                  bgcolor: "var(--red)",
-                  color: "var(--primary)",
-                  fontWeight: 700,
-                  "&:hover": { bgcolor: "var(--darkred)" },
-                }}
-              >
-                JOIN NOW
-              </Button>
-            </Grid>
-          </Grid>
+          {/* Left side - Description */}
+          <Typography
+            variant="h6"
+            sx={{
+              color: "var(--primary)",
+              fontWeight: 800,
+              mb: 2,
+              fontFamily: "Cairo",
+            }}
+          >
+            WHERE PRECISION MEETS VISUALIZATION
+          </Typography>
+          <Typography
+            variant="body2"
+            sx={{
+              color: "var(--text)",
+              mb: 3,
+              fontFamily: "Space Grotesk",
+              fontWeight: 500,
+            }}
+          >
+            At Modifire, we understand that building your ideal firearm
+            shouldn't involve guesswork. Our platform combines cutting-edge
+            visualization technology with comprehensive compatibility checks and
+            instant pricing to give you complete control over your customization
+            journey. Whether you're a competitive shooter optimizing performance
+            or an enthusiast exploring tactical configurations, Modifire
+            provides the tools, accuracy, and confidence you need to bring your
+            vision to life.
+          </Typography>
+          <Button
+            variant="contained"
+            sx={{
+              bgcolor: "var(--red)",
+              color: "var(--primary)",
+              fontWeight: 700,
+              "&:hover": { bgcolor: "var(--darkred)" },
+            }}
+          >
+            JOIN NOW
+          </Button>
         </Box>
       </Box>
 
