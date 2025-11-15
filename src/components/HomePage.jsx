@@ -11,7 +11,10 @@ import {
 import { styled } from "@mui/material/styles";
 import logo from "../assets/ModifireLOGO1.png";
 import LoginForm from "./Login";
-import { useState } from "react";
+import RegisterForm from "./Register";
+import { useEffect, useState, useContext } from "react";
+import { AuthContext } from "../contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 // Put shared styles here at the top
 const NavButton = styled(Button)({
@@ -35,8 +38,25 @@ const HomeButton = styled(Button)({
   },
 });
 
+const handleOpenRegister = () => {
+  setOpenLogin(false);
+  setOpenRegister(true);
+};
+
 function HomePage() {
-  const [open, setOpen] = useState(false);
+  const [openLogin, setOpenLogin] = useState(false);
+  const [openRegister, setOpenRegister] = useState(false);
+  const { isAuthenticated, loading } = useContext(AuthContext);
+  const navigate = useNavigate();
+
+  // Redirect to dashboard if already logged in
+  useEffect(() => {
+    if (!loading && isAuthenticated) {
+      navigate("/dashboard", { replace: true });
+    }
+  }, [isAuthenticated, loading, navigate]);
+
+  
   return (
     <Box sx={{ bgcolor: "var(--darkgray)", minHeight: "100vh" }}>
       {/* Header */}
@@ -77,29 +97,49 @@ function HomePage() {
               <NavButton color="inherit">ABOUT US</NavButton>
               <NavButton color="inherit">CONTACT US</NavButton>
               <NavButton color="inherit">MODIFY</NavButton>
-              <NavButton color="inherit" onClick={() => setOpen(true)}>
+              <NavButton color="inherit" onClick={() => setOpenLogin(true)}>
                 LOG IN / REGISTER
               </NavButton>
               <Dialog
-                open={open}
-                onClose={() => setOpen(false)}
+                open={openLogin || openRegister}
+                onClose={() => {
+                  setOpenLogin(false);
+                  setOpenRegister(false);
+                }}
                 BackdropProps={{
                   sx: {
                     backdropFilter: "blur(6px)",
-                    backgroundColor: "rgba(0,0,0,0.3)", // optional: darken the blur
+                    backgroundColor: "rgba(0,0,0,0.3)",
                   },
                 }}
                 PaperProps={{
                   sx: {
                     boxShadow: "none",
                     outline: "none",
-                    border: "none", // optional
+                    border: "none",
                     backgroundColor: "var(--darkgray)",
-                    borderRadius: 2.5, // match your theme
+                    borderRadius: 2.5,
                   },
                 }}
               >
-                <LoginForm />
+                {openLogin && (
+                  <LoginForm
+                    onClose={() => setOpenLogin(false)}
+                    onOpenRegister={() => {
+                      setOpenLogin(false);
+                      setOpenRegister(true);
+                    }}
+                  />
+                )}
+                {openRegister && (
+                  <RegisterForm
+                    onClose={() => setOpenRegister(false)}
+                    onOpenLogin={() => {
+                      setOpenRegister(false);
+                      setOpenLogin(true);
+                    }}
+                  />
+                )}
               </Dialog>
             </Box>
           </Box>

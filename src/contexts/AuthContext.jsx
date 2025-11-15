@@ -9,9 +9,39 @@ export const useAuth = () => {
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [isAuthenticated, setIsAuthenticated] = useState(
-    !!localStorage.getItem("token")
-  );
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [loading, setLoading] = useState(true); // Add loading state
+
+  // Check authentication on mount
+  useEffect(() => {
+    const initAuth = async () => {
+      const token = localStorage.getItem("token");
+
+      if (token && token !== "null" && token !== "undefined") {
+        try {
+          const userData = await getCurrentUser();
+          if (userData) {
+            setUser(userData);
+            setIsAuthenticated(true);
+          } else {
+            setIsAuthenticated(false);
+            setUser(null);
+          }
+        } catch (error) {
+          console.error("Auth initialization failed:", error);
+          setIsAuthenticated(false);
+          setUser(null);
+        }
+      } else {
+        setIsAuthenticated(false);
+        setUser(null);
+      }
+
+      setLoading(false);
+    };
+
+    initAuth();
+  }, []);
 
   async function handleLogin(username, password) {
     try {
@@ -56,6 +86,9 @@ export const AuthProvider = ({ children }) => {
     } catch (error) {
       console.error("Logout Failed", error);
       throw error;
+    } finally {
+      setUser(null);
+      setIsAuthenticated(false);
     }
   }
 

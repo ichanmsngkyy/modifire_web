@@ -1,6 +1,7 @@
 import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../contexts/AuthContext";
+import HomePage from "./HomePage";
 
 function Dashboard() {
   const { handleLogout } = useContext(AuthContext);
@@ -9,13 +10,8 @@ function Dashboard() {
 
   const handleClick = async (e) => {
     e.preventDefault();
-    try {
-      await handleLogout();
-      navigate("/login");
-    } catch (error) {
-      console.log("Error");
-      throw error;
-    }
+    await handleLogout();
+    navigate("/");
   };
 
   return (

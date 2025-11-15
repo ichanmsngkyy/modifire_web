@@ -9,9 +9,16 @@ export async function login(username, password) {
       },
     });
 
-    //Rails return: {token: jwt_here, user: ...}
-    const { token, user } = response.data;
+    // Rails Devise JWT returns token in Authorization header
+    const authHeader = response.headers["authorization"];
 
+    // Extract token (remove "Bearer " prefix if present)
+    const token = authHeader?.replace("Bearer ", "") || authHeader;
+
+    const user = response.data.user || response.data.data || response.data;
+
+    console.log("Token:", token);
+    console.log("Full Bearer:", `Bearer ${token}`);
     // Save token to browser
     localStorage.setItem("token", token);
 
@@ -37,9 +44,9 @@ export async function register(
         password_confirmation: password_confirmation,
       },
     });
-    //Rails return: {token: jwt_here, user: ...}
-    const { token, user } = response.data;
-
+    const authHeader = response.headers["authorization"];
+    const token = authHeader?.replace("Bearer ", "") || authHeader;
+    const user = response.data.user || response.data.data || response.data;
     // Save token to browser
     localStorage.setItem("token", token);
 
@@ -57,6 +64,8 @@ export async function logout() {
     localStorage.removeItem("token");
     return;
   }
+  console.log("Token:", token);
+  console.log("Full Bearer:", `Bearer ${token}`);
   try {
     await api.delete("/api/auth/logout", {
       headers: {
@@ -64,8 +73,33 @@ export async function logout() {
       },
     });
     localStorage.removeItem("token");
+  } catch (err) {
+    console.error("Log out failed: ", err);
+  } finally {
+    localStorage.removeItem("token");
+  }
+}
+
+export async function getCurrentUser() {
+  const token = localStorage.getItem("token");
+
+  if (!token || token === "null" || token === "undefined") {
+    return null;
+  }
+
+  try {
+    // Call your API to get current user data
+    const response = await api.get("/api/current_user", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    return response.data.user || response.data;
   } catch (error) {
-    console.error("Log out failed: ", error);
-    throw error;
+    console.error("Failed to fetch current user:", error);
+    // If token is invalid, remove it
+    localStorage.removeItem("token");
+    return null;
   }
 }

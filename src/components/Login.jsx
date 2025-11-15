@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { Link as RouterLink } from "react-router-dom";
 import Link from "@mui/material/Link";
 
-function LoginForm({ onClose }) {
+function LoginForm({ onClose, onOpenRegister }) {
   const { handleLogin } = useContext(AuthContext);
   const [formData, setFormData] = useState({
     username: "",
@@ -38,7 +38,6 @@ function LoginForm({ onClose }) {
   };
 
   const validateForm = async (e) => {
-    e.preventDefault();
     setGeneralError("");
     try {
       await handleLogin(formData.username, formData.password);
@@ -165,12 +164,23 @@ function LoginForm({ onClose }) {
           </Typography>
         )}
         <Typography color="var(--text)" fontSize={14}>
-          Already have an account?{" "}
-          <Link
-            component={RouterLink}
-            to="/register"
-            sx={{ color: "var(--primary)", fontWeight: 700 }}
-          > Sign up</Link>
+          Don&apos;t have an account?{" "}
+          <span
+            style={{
+              color: "var(--primary)",
+              fontWeight: 700,
+              cursor: "pointer",
+              textDecoration: "underline",
+            }}
+            onClick={onOpenRegister}
+            role="button"
+            tabIndex={0}
+            onKeyPress={(e) => {
+              if (e.key === "Enter") onOpenRegister();
+            }}
+          >
+            Sign Up!
+          </span>
         </Typography>
         <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
           <Button
