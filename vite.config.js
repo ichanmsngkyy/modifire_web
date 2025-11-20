@@ -5,4 +5,9 @@ import react from "@vitejs/plugin-react";
 export default defineConfig({
   base: "/modifire_web/",
   plugins: [react()],
+  server: {
+    proxy: {
+      "/api": "http://localhost:3000", // or your Rails backend URL
+    },
+  },
 });

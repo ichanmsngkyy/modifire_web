@@ -5,13 +5,12 @@ import HomePage from "./HomePage";
 
 function Dashboard() {
   const { handleLogout } = useContext(AuthContext);
-  const [errors, setErrors] = useState({});
   const navigate = useNavigate();
 
   const handleClick = async (e) => {
     e.preventDefault();
     await handleLogout();
-    navigate("/");
+    navigate("/modifire_web/");
   };
 
   return (

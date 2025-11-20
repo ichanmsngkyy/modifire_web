@@ -26,34 +26,12 @@ function LoginForm({ onClose, onOpenRegister }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (validateForm()) {
-      try {
-        await handleLogin(formData.username, formData.password);
-        navigate("/dashboard");
-      } catch (error) {
-        setGeneralError("Invalid username or password");
-        throw error;
-      }
-    }
-  };
-
-  const validateForm = async (e) => {
-    setGeneralError("");
     try {
       await handleLogin(formData.username, formData.password);
-      navigate("/dashboard");
+      navigate("/modifire_web/dashboard");
     } catch (error) {
-      let message = "Invalid username or password";
-      if (error.response && error.response.data) {
-        if (error.response.data.errors) {
-          setErrors(error.response.data.errors); // { username: "...", password: "..." }
-          return;
-        }
-        if (error.response.data.error) {
-          message = error.response.data.error;
-        }
-      }
-      setGeneralError(message);
+      setGeneralError("Invalid username or password");
+      throw error;
     }
   };
 

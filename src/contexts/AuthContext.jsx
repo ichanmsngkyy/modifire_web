@@ -1,5 +1,6 @@
 import { createContext, useState, useEffect, useContext } from "react";
 import { login, register, logout } from "../services/authService";
+import { getCurrentUser } from "../services/authService";
 
 export const AuthContext = createContext();
 
@@ -97,6 +98,7 @@ export const AuthProvider = ({ children }) => {
       value={{
         user,
         isAuthenticated,
+        loading,
         handleLogin,
         handleRegister,
         handleLogout,

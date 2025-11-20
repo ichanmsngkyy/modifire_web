@@ -102,4 +102,7 @@ export async function getCurrentUser() {
     localStorage.removeItem("token");
     return null;
   }
+  
 }
+
+

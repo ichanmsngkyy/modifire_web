@@ -11,7 +11,7 @@ function ProtectedRoute({ children }) {
   }
 
   if (!isAuthenticated) {
-    return <Navigate to="/" replace />;
+    return <Navigate to="/modifire_web" replace />;
   }
 
   return children;

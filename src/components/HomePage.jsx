@@ -49,14 +49,30 @@ function HomePage() {
   const { isAuthenticated, loading } = useContext(AuthContext);
   const navigate = useNavigate();
 
-  // Redirect to dashboard if already logged in
   useEffect(() => {
     if (!loading && isAuthenticated) {
-      navigate("/dashboard", { replace: true });
+      navigate("/modifire_web/dashboard", { replace: true });
     }
   }, [isAuthenticated, loading, navigate]);
 
-  
+  if (loading) {
+    // You can use a spinner from Material UI or just text
+    return (
+      <Box
+        sx={{
+          minHeight: "100vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <Typography variant="h6" color="var(--primary)">
+          Loading...
+        </Typography>
+      </Box>
+    );
+  }
+
   return (
     <Box sx={{ bgcolor: "var(--darkgray)", minHeight: "100vh" }}>
       {/* Header */}
