@@ -15,6 +15,8 @@ import ProtectedRoute from "./components/ProtectedRoutes";
 import HomePage from "./components/HomePage";
 import GunList from "./components/GunList";
 import GunCustomizer from "./components/GunCustomizer";
+import MyBuilds from "./components/MyBuilds";
+
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 
@@ -45,6 +47,14 @@ function App() {
             <Route
               path="/modifire_web/customizer"
               element={<GunCustomizer gun={null} />}
+            />
+            <Route
+              path="/modifire_web/dashboard/mybuilds"
+              element={
+                <ProtectedRoute>
+                  <MyBuilds />
+                </ProtectedRoute>
+              }
             />
           </Routes>
         </Router>

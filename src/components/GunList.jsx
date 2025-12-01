@@ -12,6 +12,7 @@ import {
   Select,
   MenuItem,
   Grid,
+  Button,
 } from "@mui/material";
 import { getGuns } from "../services/gunService";
 
@@ -51,77 +52,75 @@ function GunList() {
   });
 
   return (
-    <Box>
+    <Box sx={{ bgcolor: "var(--darkgray)", minHeight: "100vh", pb: 6 }}>
       <AppBar
         position="static"
-        sx={{ bgcolor: "var(--blackish)", boxShadow: "none", padding: "0.8em" }}
+        sx={{ bgcolor: "var(--blackish)", boxShadow: "none", p: 1 }}
       >
-        <Toolbar>
+        <Toolbar
+          sx={{
+            minHeight: 64,
+            px: 0,
+            py: 1,
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "flex-start",
+            gap: 2,
+          }}
+        >
+          <Button
+            variant="contained"
+            sx={{
+              bgcolor: "var(--red)",
+              color: "#fff",
+              fontWeight: 700,
+              borderRadius: 2,
+              px: 2.5,
+              py: 1,
+              boxShadow: "0 2px 8px #0006",
+              ml: 1,
+              "&:hover": { bgcolor: "var(--hover)" },
+            }}
+            onClick={() => navigate("/modifire_web/dashboard/mybuilds")}
+          >
+            ← Back
+          </Button>
           <Box
             sx={{
-              width: "100%",
-              maxWidth: 900,
-              mx: "auto",
               display: "flex",
+              gap: 2,
               alignItems: "center",
-              justifyContent: "space-between",
+              justifyContent: "center",
+              width: { xs: "100%", sm: 500, md: 600 },
+              maxWidth: 600,
+              ml: "auto",
             }}
           >
             <TextField
-              id="outlined-search"
-              label="Search"
-              type="Search"
-              autoComplete="on"
-              sx={{
-                mb: 2,
-                mr: 2,
-                "& .MuiInputLabel-root": {
-                  color: "var(--gray)",
-                },
-                "& .MuiInputLabel-root.Mui-focused": {
-                  color: "var(--text)",
-                },
-                "& .MuiOutlinedInput-root": {
-                  "& fieldset": {
-                    borderColor: "var(--gray)",
-                  },
-                  "&:hover fieldset": {
-                    borderColor: "var(--red)",
-                  },
-                  "&.Mui-focused fieldset": {
-                    borderColor: "var(--text)",
-                  },
-                },
-                "& .MuiOutlinedInput-input": {
-                  color: "var(--text)",
-                },
-              }}
+              variant="outlined"
+              size="small"
+              placeholder="Search guns..."
               value={filter}
               onChange={(e) => setFilter(e.target.value)}
+              sx={{
+                bgcolor: "var(--blackish)",
+                borderRadius: 1,
+                color: "var(--text)",
+                minWidth: 180,
+                flex: 1,
+              }}
+              InputProps={{ style: { color: "var(--text)" } }}
             />
-            <FormControl sx={{ minWidth: 160, mb: 2 }}>
-              <InputLabel
-                id="category-filter-label"
-                sx={{ color: "var(--gray)" }}
-              >
-                Category
-              </InputLabel>
+            <FormControl size="small" sx={{ minWidth: 140 }}>
+              <InputLabel sx={{ color: "var(--gray)" }}>Category</InputLabel>
               <Select
-                labelId="category-filter-label"
-                id="category-filter"
                 value={category}
                 label="Category"
                 onChange={(e) => setCategory(e.target.value)}
-                sx={{
-                  color: "var(--text)",
-                  ".MuiOutlinedInput-notchedOutline": {
-                    borderColor: "var(--gray)",
-                  },
-                  "&:hover .MuiOutlinedInput-notchedOutline": {
-                    borderColor: "var(--red)",
-                  },
-                  "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                    borderColor: "var(--text)",
+                sx={{ bgcolor: "var(--blackish)", color: "var(--text)" }}
+                MenuProps={{
+                  PaperProps: {
+                    sx: { bgcolor: "var(--blackish)", color: "var(--text)" },
                   },
                 }}
               >
@@ -136,9 +135,9 @@ function GunList() {
           </Box>
         </Toolbar>
       </AppBar>
-      <Box>
+      <Box sx={{ maxWidth: 1100, mx: "auto", mt: 4 }}>
         {loading && (
-          <Typography sx={{ mt: 4, textAlign: "center" }}>
+          <Typography sx={{ mt: 4, textAlign: "center", color: "var(--text)" }}>
             Loading...
           </Typography>
         )}
@@ -148,14 +147,14 @@ function GunList() {
           </Typography>
         )}
         {!loading && !error && filteredGuns.length === 0 && (
-          <Typography sx={{ mt: 4, textAlign: "center" }}>
+          <Typography sx={{ mt: 4, textAlign: "center", color: "var(--gray)" }}>
             No guns found.
           </Typography>
         )}
         {!loading && !error && (
-          <Grid container spacing={2} justifyContent="center">
+          <Grid container spacing={3} justifyContent="center">
             {filteredGuns.map((gun) => (
-              <Grid item key={gun.id} xs={6} sm={4} md={3} lg={2} xl={2}>
+              <Grid item key={gun.id} xs={12} sm={6} md={4} lg={3} xl={2}>
                 <Box
                   onClick={() =>
                     navigate("/modifire_web/customizer", { state: { gun } })
@@ -164,18 +163,56 @@ function GunList() {
                     cursor: "pointer",
                     display: "flex",
                     alignItems: "stretch",
-                    maxWidth: 250,
+                    maxWidth: 300,
                     minWidth: 180,
                     width: "100%",
                     mx: "auto",
+                    transition: "transform 0.15s",
+                    "&:hover": { transform: "scale(1.04)" },
                   }}
                 >
-                  <GunCard
-                    name={gun.name}
-                    base_image_url={gun.base_image_url}
-                    category={gun.category}
-                    description={gun.description}
-                  />
+                  <Box
+                    sx={{
+                      bgcolor: "var(--blackish)",
+                      borderRadius: 3,
+                      boxShadow: "0 2px 12px #0008",
+                      color: "var(--text)",
+                      width: "100%",
+                      p: 2,
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                      minHeight: 240,
+                      justifyContent: "center",
+                    }}
+                  >
+                    <img
+                      src={gun.base_image_url}
+                      alt={gun.name}
+                      style={{
+                        maxWidth: "100%",
+                        maxHeight: 110,
+                        objectFit: "contain",
+                        marginBottom: 16,
+                      }}
+                    />
+                    <Typography
+                      variant="h6"
+                      sx={{ fontWeight: 700, mb: 0.5, color: "var(--primary)" }}
+                    >
+                      {gun.name}
+                    </Typography>
+                    <Typography
+                      variant="body2"
+                      sx={{
+                        color: "var(--gray)",
+                        fontWeight: 500,
+                        textTransform: "capitalize",
+                      }}
+                    >
+                      {gun.category}
+                    </Typography>
+                  </Box>
                 </Box>
               </Grid>
             ))}

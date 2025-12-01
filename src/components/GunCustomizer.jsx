@@ -1,15 +1,37 @@
-import { Box, Button, Drawer } from "@mui/material";
+import {
+  Box,
+  Button,
+  Drawer,
+  TextField,
+  InputAdornment,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
+} from "@mui/material";
 import { useDrop } from "react-dnd";
-import { useLocation } from "react-router-dom";
-import { useState } from "react";
-import Attachment from "./Attachment";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { getAttachments } from "../services/attachmentService";
 import { Rnd } from "react-rnd";
 
 function GunCustomizer() {
   const location = useLocation();
+  const navigate = useNavigate();
+  const gun = location.state?.gun;
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [customizedAttachments, setCustomizedAttachments] = useState([]);
   const [hoveredOverlayId, setHoveredOverlayId] = useState(null);
+  const [attachments, setAttachments] = useState([]);
+  const [search, setSearch] = useState("");
+  const [filter, setFilter] = useState("");
+  const [saving, setSaving] = useState(false);
+  // Fetch all attachments for drawer
+  useEffect(() => {
+    getAttachments()
+      .then(setAttachments)
+      .catch(() => setAttachments([]));
+  }, []);
 
   // Handler to add attachment from drawer
   const handleAddAttachment = (attachment) => {
@@ -32,7 +54,6 @@ function GunCustomizer() {
       prev.map((att) => (att.id === id ? { ...att, ...data } : att))
     );
   };
-  const gun = location.state?.gun;
 
   // Drop target setup
   const [{ isOver, canDrop }, drop] = useDrop({
@@ -77,23 +98,160 @@ function GunCustomizer() {
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
-        background: "transparent",
+        background: "var(--darkgray)",
         border: "none",
       }}
     >
-      <Button
-        variant="contained"
-        onClick={() => setDrawerOpen(true)}
-        sx={{ position: "absolute", left: 24, top: 24 }}
+      <Box
+        sx={{
+          position: "absolute",
+          left: 24,
+          top: 24,
+          display: "flex",
+          gap: 2,
+        }}
       >
-        Show Attachments
-      </Button>
+        <Button
+          variant="contained"
+          onClick={() => navigate("/modifire_web/gunlist")}
+          sx={{
+            bgcolor: "var(--red)",
+            color: "#fff",
+            fontWeight: 700,
+            borderRadius: 2,
+            px: 2.5,
+            py: 1,
+            boxShadow: "0 2px 8px #0006",
+            "&:hover": { bgcolor: "var(--hover)" },
+          }}
+        >
+          ← Back to Gun List
+        </Button>
+        <Button
+          variant="contained"
+          onClick={() => setDrawerOpen(true)}
+          sx={{
+            bgcolor: "var(--red)",
+            color: "#fff",
+            fontWeight: 700,
+            borderRadius: 2,
+            px: 2.5,
+            py: 1,
+            boxShadow: "0 2px 8px #0006",
+            "&:hover": { bgcolor: "var(--hover)" },
+          }}
+        >
+          Show Attachments
+        </Button>
+      </Box>
       <Drawer
         anchor="left"
         open={drawerOpen}
         onClose={() => setDrawerOpen(false)}
+        PaperProps={{
+          sx: {
+            bgcolor: "var(--blackish)",
+            color: "var(--text)",
+            width: 340,
+            p: 2,
+            height: "100vh",
+            maxHeight: "100vh",
+            top: 0,
+          },
+        }}
       >
-        <Attachment onAttachmentClick={handleAddAttachment} />
+        <Box sx={{ mb: 2 }}>
+          <TextField
+            fullWidth
+            variant="outlined"
+            size="small"
+            placeholder="Search attachments..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            sx={{ mb: 2, bgcolor: "var(--darkgray)", borderRadius: 1 }}
+            InputProps={{
+              style: { color: "var(--text)" },
+              startAdornment: (
+                <InputAdornment position="start">
+                  <span role="img" aria-label="search">
+                    🔍
+                  </span>
+                </InputAdornment>
+              ),
+            }}
+          />
+          <FormControl fullWidth size="small" sx={{ mb: 2 }}>
+            <InputLabel sx={{ color: "var(--text)" }}>
+              Filter by Type
+            </InputLabel>
+            <Select
+              value={filter}
+              label="Filter by Type"
+              onChange={(e) => setFilter(e.target.value)}
+              sx={{ bgcolor: "var(--darkgray)", color: "var(--text)" }}
+              MenuProps={{
+                PaperProps: {
+                  sx: { bgcolor: "var(--blackish)", color: "var(--text)" },
+                },
+              }}
+            >
+              <MenuItem value="">All</MenuItem>
+              {[...new Set(attachments.map((a) => a.attachment_type))]
+                .filter(Boolean)
+                .map((type) => (
+                  <MenuItem key={type} value={type}>
+                    {type.charAt(0).toUpperCase() + type.slice(1)}
+                  </MenuItem>
+                ))}
+            </Select>
+          </FormControl>
+        </Box>
+        <Box sx={{ overflowY: "auto", maxHeight: "calc(100vh - 120px)" }}>
+          {attachments
+            .filter(
+              (a) =>
+                (!filter || a.attachment_type === filter) &&
+                a.name.toLowerCase().includes(search.toLowerCase())
+            )
+            .map((att) => (
+              <Box
+                key={att.id}
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 2,
+                  mb: 2,
+                  p: 1,
+                  borderRadius: 1,
+                  bgcolor: "var(--darkgray)",
+                  cursor: "pointer",
+                  transition: "background 0.2s",
+                  "&:hover": { bgcolor: "var(--hover)" },
+                }}
+                onClick={() => handleAddAttachment(att)}
+              >
+                <img
+                  src={att.base_image_url}
+                  alt={att.name}
+                  style={{
+                    width: 48,
+                    height: 48,
+                    objectFit: "contain",
+                    borderRadius: 4,
+                  }}
+                />
+                <Box>
+                  <div style={{ fontWeight: 700 }}>{att.name}</div>
+                  <div style={{ fontSize: 12, color: "var(--gray)" }}>
+                    {att.attachment_type
+                      ? att.attachment_type.charAt(0).toUpperCase() +
+                        att.attachment_type.slice(1)
+                      : ""}
+                  </div>
+                </Box>
+              </Box>
+            ))}
+        </Box>
       </Drawer>
       {gun ? (
         <>
@@ -101,28 +259,32 @@ function GunCustomizer() {
             ref={drop}
             sx={{
               position: "relative",
-              width: 400,
-              height: 300,
+              width: 650,
+              height: 480,
               border:
                 isOver && canDrop
-                  ? "2px solid #1976d2"
+                  ? "2px solid var(--red)"
                   : "2px solid transparent",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              background: "#fff",
+              background: "#222325",
+              boxShadow: "0 2px 16px #0008",
+              borderRadius: 3,
             }}
           >
             <img
               src={imagePath}
               alt={gun.name || "Gun image"}
               style={{
-                maxWidth: "100%",
-                maxHeight: "100%",
+                maxWidth: "90%",
+                maxHeight: "90%",
                 width: "auto",
                 height: "auto",
                 display: "block",
                 margin: "0 auto",
+                borderRadius: 3,
+                // boxShadow removed for cleaner look
               }}
             />
             {/* Render added attachments as movable/resizable overlays */}
@@ -193,14 +355,72 @@ function GunCustomizer() {
                       display: "block",
                       pointerEvents: "auto",
                       userSelect: "none",
+                      borderRadius: 2,
+                      // boxShadow removed for cleaner overlay
                     }}
                     draggable={false}
                   />
                 </div>
               </Rnd>
             ))}
+            {/* Save Build Button - fixed to lower right of screen */}
+            <Button
+              variant="contained"
+              sx={{
+                position: "fixed",
+                bottom: 32,
+                right: 48,
+                bgcolor: "var(--red)",
+                color: "#fff",
+                fontWeight: 700,
+                borderRadius: 2,
+                px: 3,
+                py: 1.2,
+                boxShadow: "0 2px 8px #0006",
+                zIndex: 1301, // above drawer
+                "&:hover": { bgcolor: "var(--hover)" },
+              }}
+              disabled={saving}
+              onClick={async () => {
+                setSaving(true);
+                try {
+                  // Compose build data in the format expected by backend
+                  const build = {
+                    build: {
+                      name: gun.name ? `${gun.name} Build` : "My Build",
+                      user_id: 1, // TODO: Replace with actual user id from auth context
+                      gun_id: gun.id,
+                      attachment_ids: customizedAttachments.map((a) =>
+                        parseInt(a.base_id || a.id)
+                      ),
+                    },
+                  };
+                  await fetch("/api/builds", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(build),
+                  });
+                  alert("Build saved!");
+                } catch (e) {
+                  alert("Failed to save build");
+                } finally {
+                  setSaving(false);
+                }
+              }}
+            >
+              {saving ? "Saving..." : "Save Build"}
+            </Button>
           </Box>
-          <div style={{ marginTop: "1em", fontSize: "1.5em" }}>{gun.name}</div>
+          <div
+            style={{
+              marginTop: "1em",
+              fontSize: "1.5em",
+              color: "var(--primary)",
+              fontWeight: 700,
+            }}
+          >
+            {gun.name}
+          </div>
         </>
       ) : (
         <div>No gun selected.</div>
