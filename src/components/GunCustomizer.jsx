@@ -13,14 +13,26 @@ import { useDrop } from "react-dnd";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { getAttachments } from "../services/attachmentService";
+import { updateBuild } from "../services/buildService";
 import { Rnd } from "react-rnd";
 
 function GunCustomizer() {
   const location = useLocation();
   const navigate = useNavigate();
   const gun = location.state?.gun;
+  const build = location.state?.build;
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const [customizedAttachments, setCustomizedAttachments] = useState([]);
+  // Load overlays if editing, else empty
+  const [customizedAttachments, setCustomizedAttachments] = useState(
+    () => build?.attachment_overlays || []
+  );
+  // Editable title state, sync with build when it changes
+  const [title, setTitle] = useState(() => build?.title || "Untitled Build");
+  useEffect(() => {
+    if (build?.title) {
+      setTitle(build.title);
+    }
+  }, [build]);
   const [hoveredOverlayId, setHoveredOverlayId] = useState(null);
   const [attachments, setAttachments] = useState([]);
   const [search, setSearch] = useState("");
@@ -255,6 +267,35 @@ function GunCustomizer() {
       </Drawer>
       {gun ? (
         <>
+          {/* Editable Title Field */}
+          <Box
+            sx={{
+              width: 650,
+              mx: "auto",
+              mt: 4,
+              mb: 2,
+              display: "flex",
+              justifyContent: "center",
+            }}
+          >
+            <input
+              type="text"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              style={{
+                fontSize: "2em",
+                fontWeight: 700,
+                textAlign: "center",
+                background: "transparent",
+                color: "var(--primary)",
+                border: "none",
+                outline: "none",
+                width: "100%",
+                marginBottom: 8,
+              }}
+              aria-label="Build Title"
+            />
+          </Box>
           <Box
             ref={drop}
             sx={{
@@ -384,23 +425,48 @@ function GunCustomizer() {
               onClick={async () => {
                 setSaving(true);
                 try {
-                  // Compose build data in the format expected by backend
-                  const build = {
-                    build: {
-                      name: gun.name ? `${gun.name} Build` : "My Build",
-                      user_id: 1, // TODO: Replace with actual user id from auth context
-                      gun_id: gun.id,
-                      attachment_ids: customizedAttachments.map((a) =>
-                        parseInt(a.base_id || a.id)
-                      ),
-                    },
+                  const buildData = {
+                    name: gun.name ? `${gun.name} Build` : "My Build",
+                    title,
+                    user_id: 1, // TODO: Replace with actual user id from auth context
+                    gun_id: gun.id,
+                    attachment_ids: customizedAttachments.map((a) =>
+                      parseInt(a.base_id || a.id)
+                    ),
+                    // Save overlays (positions, sizes, etc)
+                    attachment_overlays: customizedAttachments.map(
+                      ({
+                        id,
+                        base_id,
+                        x,
+                        y,
+                        width,
+                        height,
+                        name,
+                        base_image_url,
+                      }) => ({
+                        id,
+                        base_id,
+                        x,
+                        y,
+                        width,
+                        height,
+                        name,
+                        base_image_url,
+                      })
+                    ),
                   };
-                  await fetch("/api/builds", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(build),
-                  });
-                  alert("Build saved!");
+                  if (build && build.id) {
+                    await updateBuild(build.id, buildData);
+                    navigate("/modifire_web/mybuilds");
+                  } else {
+                    await fetch("/api/builds", {
+                      method: "POST",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({ build: buildData }),
+                    });
+                    navigate("/modifire_web/mybuilds");
+                  }
                 } catch (e) {
                   alert("Failed to save build");
                 } finally {
@@ -411,16 +477,6 @@ function GunCustomizer() {
               {saving ? "Saving..." : "Save Build"}
             </Button>
           </Box>
-          <div
-            style={{
-              marginTop: "1em",
-              fontSize: "1.5em",
-              color: "var(--primary)",
-              fontWeight: 700,
-            }}
-          >
-            {gun.name}
-          </div>
         </>
       ) : (
         <div>No gun selected.</div>

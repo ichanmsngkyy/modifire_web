@@ -51,7 +51,7 @@ function HomePage() {
 
   useEffect(() => {
     if (!loading && isAuthenticated) {
-      navigate("/modifire_web/dashboard", { replace: true });
+      navigate("/modifire_web/mybuilds", { replace: true });
     }
   }, [isAuthenticated, loading, navigate]);
 

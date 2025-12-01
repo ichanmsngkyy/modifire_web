@@ -37,19 +37,19 @@ function App() {
             <Route path="/modifire_web/login" element={<LoginForm />} />
             <Route path="/modifire_web/GunList" element={<GunList />} />
             <Route
-              path="/modifire_web/dashboard"
-              element={
-                <ProtectedRoute>
-                  <Dashboard />
-                </ProtectedRoute>
-              }
-            />
-            <Route
               path="/modifire_web/customizer"
               element={<GunCustomizer gun={null} />}
             />
             <Route
               path="/modifire_web/dashboard/mybuilds"
+              element={
+                <ProtectedRoute>
+                  <MyBuilds />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/modifire_web/mybuilds"
               element={
                 <ProtectedRoute>
                   <MyBuilds />

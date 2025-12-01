@@ -28,7 +28,7 @@ function LoginForm({ onClose, onOpenRegister }) {
     e.preventDefault();
     try {
       await handleLogin(formData.username, formData.password);
-      navigate("/modifire_web/dashboard");
+      navigate("/modifire_web/mybuilds");
     } catch (error) {
       setGeneralError("Invalid username or password");
       throw error;
