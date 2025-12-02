@@ -49,6 +49,7 @@ export const AuthProvider = ({ children }) => {
       const userData = await login(username, password);
       setUser(userData);
       setIsAuthenticated(true);
+      return userData; // Return user data so Login component can check role
     } catch (error) {
       console.error("Login Failed", error);
       throw error;

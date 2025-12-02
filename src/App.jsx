@@ -10,12 +10,16 @@ import "./App.css";
 import { AuthProvider } from "./contexts/AuthContext";
 import RegisterForm from "./components/Register";
 import LoginForm from "./components/Login";
-import Dashboard from "./components/Dashboard";
 import ProtectedRoute from "./components/ProtectedRoutes";
+import AdminRoute from "./components/AdminRoute";
 import HomePage from "./components/HomePage";
 import GunList from "./components/GunList";
 import GunCustomizer from "./components/GunCustomizer";
 import MyBuilds from "./components/MyBuilds";
+import AdminDashboard from "./components/AdminDashboard";
+import AllBuilds from "./components/admin/AllBuilds";
+import AllUsers from "./components/admin/AllUsers";
+import UploadGun from "./components/admin/UploadGun";
 
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
@@ -41,7 +45,7 @@ function App() {
               element={<GunCustomizer gun={null} />}
             />
             <Route
-              path="/modifire_web/dashboard/mybuilds"
+              path="/modifire_web/mybuilds"
               element={
                 <ProtectedRoute>
                   <MyBuilds />
@@ -54,6 +58,38 @@ function App() {
                 <ProtectedRoute>
                   <MyBuilds />
                 </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/modifire_web/admin"
+              element={
+                <AdminRoute>
+                  <AdminDashboard />
+                </AdminRoute>
+              }
+            />
+            <Route
+              path="/modifire_web/admin/builds"
+              element={
+                <AdminRoute>
+                  <AllBuilds />
+                </AdminRoute>
+              }
+            />
+            <Route
+              path="/modifire_web/admin/users"
+              element={
+                <AdminRoute>
+                  <AllUsers />
+                </AdminRoute>
+              }
+            />
+            <Route
+              path="/modifire_web/admin/upload-gun"
+              element={
+                <AdminRoute>
+                  <UploadGun />
+                </AdminRoute>
               }
             />
           </Routes>

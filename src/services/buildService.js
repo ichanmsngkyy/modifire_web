@@ -5,6 +5,11 @@ export async function getUserBuilds() {
   return response.data;
 }
 
+export async function createBuild(buildData) {
+  const response = await api.post("/api/builds", { build: buildData });
+  return response.data;
+}
+
 export async function updateBuild(buildId, buildData) {
   const response = await api.put(`/api/builds/${buildId}`, buildData);
   return response.data;

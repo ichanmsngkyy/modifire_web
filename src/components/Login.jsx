@@ -6,7 +6,7 @@ import { Link as RouterLink } from "react-router-dom";
 import Link from "@mui/material/Link";
 
 function LoginForm({ onClose, onOpenRegister }) {
-  const { handleLogin } = useContext(AuthContext);
+  const { handleLogin, user } = useContext(AuthContext);
   const [formData, setFormData] = useState({
     username: "",
     password: "",
@@ -27,8 +27,17 @@ function LoginForm({ onClose, onOpenRegister }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await handleLogin(formData.username, formData.password);
-      navigate("/modifire_web/mybuilds");
+      const userData = await handleLogin(formData.username, formData.password);
+      console.log("User data after login:", userData);
+      console.log("User role:", userData?.role);
+      // Redirect based on user role (role is an integer: 0 = user, 1 = admin)
+      if (userData?.role === 1 || userData?.role === "admin") {
+        console.log("Redirecting to admin dashboard");
+        navigate("/modifire_web/admin");
+      } else {
+        console.log("Redirecting to my builds");
+        navigate("/modifire_web/mybuilds");
+      }
     } catch (error) {
       setGeneralError("Invalid username or password");
       throw error;

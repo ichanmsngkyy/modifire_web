@@ -46,14 +46,19 @@ const handleOpenRegister = () => {
 function HomePage() {
   const [openLogin, setOpenLogin] = useState(false);
   const [openRegister, setOpenRegister] = useState(false);
-  const { isAuthenticated, loading } = useContext(AuthContext);
+  const { isAuthenticated, loading, user } = useContext(AuthContext);
   const navigate = useNavigate();
 
   useEffect(() => {
     if (!loading && isAuthenticated) {
-      navigate("/modifire_web/mybuilds", { replace: true });
+      // Redirect based on user role (role is an integer: 0 = user, 1 = admin)
+      if (user?.role === 1 || user?.role === "admin") {
+        navigate("/modifire_web/admin", { replace: true });
+      } else {
+        navigate("/modifire_web/mybuilds", { replace: true });
+      }
     }
-  }, [isAuthenticated, loading, navigate]);
+  }, [isAuthenticated, loading, user, navigate]);
 
   if (loading) {
     // You can use a spinner from Material UI or just text

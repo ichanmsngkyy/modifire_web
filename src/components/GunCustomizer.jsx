@@ -11,14 +11,16 @@ import {
 } from "@mui/material";
 import { useDrop } from "react-dnd";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { getAttachments } from "../services/attachmentService";
-import { updateBuild } from "../services/buildService";
+import { updateBuild, createBuild } from "../services/buildService";
+import { AuthContext } from "../contexts/AuthContext";
 import { Rnd } from "react-rnd";
 
 function GunCustomizer() {
   const location = useLocation();
   const navigate = useNavigate();
+  const { user } = useContext(AuthContext);
   const gun = location.state?.gun;
   const build = location.state?.build;
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -421,14 +423,13 @@ function GunCustomizer() {
                 zIndex: 1301, // above drawer
                 "&:hover": { bgcolor: "var(--hover)" },
               }}
-              disabled={saving}
               onClick={async () => {
                 setSaving(true);
                 try {
                   const buildData = {
                     name: gun.name ? `${gun.name} Build` : "My Build",
                     title,
-                    user_id: 1, // TODO: Replace with actual user id from auth context
+                    user_id: user?.id || 1,
                     gun_id: gun.id,
                     attachment_ids: customizedAttachments.map((a) =>
                       parseInt(a.base_id || a.id)
@@ -458,21 +459,21 @@ function GunCustomizer() {
                   };
                   if (build && build.id) {
                     await updateBuild(build.id, buildData);
-                    navigate("/modifire_web/mybuilds");
                   } else {
-                    await fetch("/api/builds", {
-                      method: "POST",
-                      headers: { "Content-Type": "application/json" },
-                      body: JSON.stringify({ build: buildData }),
-                    });
-                    navigate("/modifire_web/mybuilds");
+                    await createBuild(buildData);
                   }
+                  navigate("/modifire_web/mybuilds");
                 } catch (e) {
-                  alert("Failed to save build");
+                  console.error("Save error:", e);
+                  alert(
+                    "Failed to save build: " +
+                      (e.response?.data?.error || e.message)
+                  );
                 } finally {
                   setSaving(false);
                 }
               }}
+              disabled={saving}
             >
               {saving ? "Saving..." : "Save Build"}
             </Button>

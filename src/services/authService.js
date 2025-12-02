@@ -72,10 +72,11 @@ export async function logout() {
         Authorization: `Bearer ${token}`,
       },
     });
-    localStorage.removeItem("token");
   } catch (err) {
-    console.error("Log out failed: ", err);
+    console.error("Log out failed on backend:", err);
+    // Continue anyway - we still want to clear local state
   } finally {
+    // Always remove token regardless of backend response
     localStorage.removeItem("token");
   }
 }
@@ -102,7 +103,4 @@ export async function getCurrentUser() {
     localStorage.removeItem("token");
     return null;
   }
-  
 }
-
-
